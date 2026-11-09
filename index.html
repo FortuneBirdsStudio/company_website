@@ -2,48 +2,118 @@
 <html lang="en-GB">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fortune Birds Studio</title>
+    
+    <!-- 1. Google Consent Mode v2 (Must be at the top) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+    </script>
 </head>
 <body>
 
-    <!-- 1. 保证页面主内容正常存在（不要加 display:none） -->
+    <!-- 2. Main Website Content -->
     <header>
         <h1>Fortune Birds Studio</h1>
+        <p>Professional digital studio based in the United Kingdom.</p>
     </header>
 
     <main>
         <section>
-            <h2>Welcome to Fortune Birds Studio</h2>
-            <p>Our company introduction and content goes here...</p>
+            <h2>Welcome to our official website</h2>
+            <p>We specialise in high-quality digital solutions and creative services.</p>
+        </section>
+
+        <section id="contact">
+            <h2>Contact Us</h2>
+            <form action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                <p>
+                    <label for="name">Full Name:</label><br>
+                    <input type="text" id="name" name="name" required>
+                </p>
+                <p>
+                    <label for="email">Email Address:</label><br>
+                    <input type="email" id="email" name="email" required>
+                </p>
+                <p>
+                    <label for="message">Enquiry Details:</label><br>
+                    <textarea id="message" name="message" rows="4" required></textarea>
+                </p>
+                
+                <!-- reCAPTCHA v2 Widget -->
+                <script src="https://www.google.com/recaptcha/api.js" async defer></script>
+                <div class="g-recaptcha" data-sitekey="YOUR_SITE_KEY_HERE" style="margin-bottom: 15px;"></div>
+
+                <button type="submit">Submit Enquiry</button>
+            </form>
         </section>
     </main>
 
-    <!-- 2. Cookie 弹窗（仅弹窗默认隐藏或显示，绝对不要把上面的 main 给隐藏了） -->
-    <div id="cookie-banner" style="position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #fff; padding: 15px; text-align: center; z-index: 9999;">
-        <p>We use cookies to analyze our website traffic.</p>
-        <button id="cookie-accept">Accept All</button>
-        <button id="cookie-reject">Reject Non-Essential</button>
+    <footer>
+        <p>&copy; 2026 Fortune Birds Studio Ltd. All rights reserved.</p>
+        <p>Registered in England and Wales | Company No: 12345678</p>
+        <p><a href="#" id="reset-cookie-preferences">Cookie Preferences</a></p>
+    </footer>
+
+    <!-- 3. GDPR Cookie Banner -->
+    <div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #fff; padding: 15px; text-align: center; z-index: 9999;">
+        <p style="margin: 0 0 10px 0; font-size: 14px;">
+            We use cookies to analyse our website traffic. Read our Privacy Policy.
+        </p>
+        <button id="cookie-accept" style="margin-right: 10px; padding: 6px 16px; cursor: pointer;">Accept All</button>
+        <button id="cookie-reject" style="padding: 6px 16px; cursor: pointer;">Reject Non-Essential</button>
     </div>
 
-    <!-- 3. Cookie 控制脚本 -->
+    <!-- 4. Consent & Analytics Logic -->
     <script>
-      // 脚本逻辑仅针对 cookie-banner 的显示与隐藏，切勿隐藏 body 或 main
+      const GA_MEASUREMENT_ID = 'G-YOUR_MEASUREMENT_ID';
+
+      function loadGoogleAnalytics() {
+        if (document.getElementById('ga-script')) return;
+        const script = document.createElement('script');
+        script.id = 'ga-script';
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(script);
+        gtag('consent', 'update', { 'analytics_storage': 'granted' });
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID);
+      }
+
       const consent = localStorage.getItem('cookieConsent');
       const banner = document.getElementById('cookie-banner');
-      
-      if (consent) {
-        banner.style.display = 'none'; // 已选择过则隐藏弹窗
+
+      if (consent === 'granted') {
+        loadGoogleAnalytics();
+      } else if (consent === 'denied') {
+        banner.style.display = 'none';
+      } else {
+        banner.style.display = 'block';
       }
-      
+
       document.getElementById('cookie-accept').addEventListener('click', function() {
         localStorage.setItem('cookieConsent', 'granted');
         banner.style.display = 'none';
+        loadGoogleAnalytics();
       });
+
       document.getElementById('cookie-reject').addEventListener('click', function() {
         localStorage.setItem('cookieConsent', 'denied');
         banner.style.display = 'none';
       });
-    </script>
 
+      document.getElementById('reset-cookie-preferences').addEventListener('click', function(e) {
+        e.preventDefault();
+        localStorage.removeItem('cookieConsent');
+        location.reload();
+      });
+    </script>
 </body>
 </html>
