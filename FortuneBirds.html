@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+    <meta charset="UTF-8">
+    <title>Company Name - Home</title>
+    
+    <!-- 1. GOOGLE CONSENT MODE V2 SETUP (MUST be at the very top of <head>) -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      // Set default consent states to 'denied' BEFORE analytics loads
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied'
+      });
+    </script>
+</head>
+<body>
+
+    <!-- Main page content here -->
+
+    <!-- 2. GDPR COOKIE CONSENT BANNER -->
+    <div id="cookie-banner" style="display: none; position: fixed; bottom: 0; left: 0; right: 0; background: #222; color: #fff; padding: 15px; text-align: center; z-index: 9999;">
+        <p style="margin: 0 0 10px 0; font-size: 14px;">
+            We use cookies to analyze our website traffic and improve your browsing experience. Read our 
+            <a href="#privacy" style="color: #fff; text-decoration: underline;">Privacy Policy</a>.
+        </p>
+        <button id="cookie-accept" style="margin-right: 10px; padding: 6px 16px; cursor: pointer;">Accept All</button>
+        <button id="cookie-reject" style="padding: 6px 16px; cursor: pointer;">Reject Non-Essential</button>
+    </div>
+
+    <!-- 3. CONSENT CONTROL SCRIPT -->
+    <script>
+      const GA_MEASUREMENT_ID = 'G-YOUR_MEASUREMENT_ID'; // Replace with your ID
+
+      function loadGoogleAnalytics() {
+        // Prevent loading duplicate scripts if already present
+        if (document.getElementById('ga-script')) return;
+
+        // Dynamically load the Google Analytics script tag
+        const script = document.createElement('script');
+        script.id = 'ga-script';
+        script.async = true;
+        script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`;
+        document.head.appendChild(script);
+
+        // Update consent signals so GA registers tracking
+        gtag('consent', 'update', {
+          'analytics_storage': 'granted'
+        });
+
+        gtag('js', new Date());
+        gtag('config', GA_MEASUREMENT_ID);
+      }
+
+      // Check user preference saved in LocalStorage
+      const consent = localStorage.getItem('cookieConsent');
+      const banner = document.getElementById('cookie-banner');
+
+      if (consent === 'granted') {
+        // User previously accepted: fire GA immediately
+        loadGoogleAnalytics();
+      } else if (consent === 'denied') {
+        // User previously rejected: do nothing, leave GA off
+        banner.style.display = 'none';
+      } else {
+        // No decision made yet: show banner
+        banner.style.display = 'block';
+      }
+
+      // Button Event Listeners
+      document.getElementById('cookie-accept').addEventListener('click', function() {
+        localStorage.setItem('cookieConsent', 'granted');
+        banner.style.display = 'none';
+        loadGoogleAnalytics();
+      });
+
+      document.getElementById('cookie-reject').addEventListener('click', function() {
+        localStorage.setItem('cookieConsent', 'denied');
+        banner.style.display = 'none';
+      });
+    </script>
+</body>
+</html>
